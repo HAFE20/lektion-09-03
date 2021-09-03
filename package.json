@@ -6,10 +6,16 @@
   "scripts": {
     "start-server": "node src/server.js"
   },
-  "keywords": ["express", "api", "rest", "node"],
+  "keywords": [
+    "express",
+    "api",
+    "rest",
+    "node"
+  ],
   "author": "David Andersson",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.1"
   }
 }
