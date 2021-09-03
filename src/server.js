@@ -77,8 +77,16 @@ app.put('/tools/:index', (req, res) => {
 		res.sendStatus(200)
 	}
 })
-// PUT
-// DELETE
+app.delete('/tools/:index', (req, res) => {
+	let index = Number(req.params.index)
+	if( !isProperIndex(index, tools.length) ) {
+		res.status(400).send('Bad tool index')
+	} else {
+		tools.splice(index, 1)
+		res.sendStatus(200)
+	}
+})
+
 
 
 // Starta servern
