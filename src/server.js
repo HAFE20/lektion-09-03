@@ -27,7 +27,8 @@ app.use( (req, res, next) => {
 	next()
 } )
 
-app.use( '/web', express.static(__dirname + '../public') )
+app.use( '/web', express.static(__dirname + '/../public') )
+
 
 
 // JSON.parse()       sträng -> objekt
