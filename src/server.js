@@ -17,23 +17,9 @@ app.use( express.json() )  // hantera JSON body vid POST request
 
 
 // Endpoints
-app.get('/tools', (req, res) => {
-	res.send(tools)
-})
 function isProperIndex(index, maxIndex) {
 	return index >= 0 && index < maxIndex
 }
-app.get('/tools/:index', (req, res) => {
-	// Kontrollera att parametern är korrekt
-	let index = Number(req.params.index)
-	if( isProperIndex(index, tools.length) ) {
-		res.send(tools[index])
-	} else {
-		// res.sendStatus(400)
-		res.status(400).send('Tool does not exist')
-	}
-})
-
 function isToolsObject(maybe) {
 	if( (typeof maybe) !== 'object' ) {
 		return false
@@ -48,6 +34,22 @@ function isToolsObject(maybe) {
 
 	return true
 }
+
+app.get('/tools', (req, res) => {
+	res.send(tools)
+})
+
+app.get('/tools/:index', (req, res) => {
+	// Kontrollera att parametern är korrekt
+	let index = Number(req.params.index)
+	if( isProperIndex(index, tools.length) ) {
+		res.send(tools[index])
+	} else {
+		// res.sendStatus(400)
+		res.status(400).send('Tool does not exist')
+	}
+})
+
 app.post('/tools', (req, res) => {
 	console.log('POST /tools, body=', req.body);
 	// Kontrollera att req.body är korrekt utformat
@@ -77,6 +79,7 @@ app.put('/tools/:index', (req, res) => {
 		res.sendStatus(200)
 	}
 })
+
 app.delete('/tools/:index', (req, res) => {
 	let index = Number(req.params.index)
 	if( !isProperIndex(index, tools.length) ) {
@@ -87,6 +90,10 @@ app.delete('/tools/:index', (req, res) => {
 	}
 })
 
+
+// Nästa steg:
+// 1. flytta ut valideringsfunktionerna till: validate.js
+// 2. flytta GET+POST+PUT+DELETE (hela tools-resursen) till en egen fil: routes/tools.js
 
 
 // Starta servern
