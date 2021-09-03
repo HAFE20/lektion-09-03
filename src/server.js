@@ -55,8 +55,21 @@ function isToolsObject(maybe) {
 	return true
 }
 
+
+
 app.get('/tools', (req, res) => {
 	res.send(tools)
+})
+
+app.get('/tools/search', (req, res) => {
+	//   /tools/search?q=....
+	let word = req.query.q
+	let found = tools.find(tool => tool.name.includes(word))
+	if( !found ) {
+		res.sendStatus(404)
+	} else {
+		res.send(found)
+	}
 })
 
 app.get('/tools/:index', (req, res) => {
