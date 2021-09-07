@@ -1,10 +1,8 @@
-// Importera Express + middleware
+// Importera Express + middleware + egna moduler
 const express = require('express')
 const cors = require('cors')
+const tools = require('./routes/tools.js')
 
-
-// Importera datan (databas)
-const tools = require('./data.js')
 
 // Konfigurera servern
 const app = express()
@@ -37,96 +35,7 @@ app.use( '/web', express.static(__dirname + '/../public') )
 
 
 // Endpoints
-function isProperIndex(index, maxIndex) {
-	return index >= 0 && index < maxIndex
-}
-function isToolsObject(maybe) {
-	if( (typeof maybe) !== 'object' ) {
-		return false
-	}
-	// tool-objekt ska ha egenskaperna: name, price, stored
-	let keys = Object.keys(maybe)
-	if( !keys.includes('name') || !keys.includes('price') || !keys.includes('stored') ) {
-		return false
-	}
-
-	// Vi kan också kontrollera att maybeBody.name / price / stored har rimliga värden
-
-	return true
-}
-
-
-
-app.get('/tools', (req, res) => {
-	res.send(tools)
-})
-
-app.get('/tools/search', (req, res) => {
-	//   /tools/search?q=....
-	let word = req.query.q
-	let found = tools.find(tool => tool.name.includes(word))
-	if( !found ) {
-		res.sendStatus(404)
-	} else {
-		res.send(found)
-	}
-})
-
-app.get('/tools/:index', (req, res) => {
-	// Kontrollera att parametern är korrekt
-	let index = Number(req.params.index)
-	if( isProperIndex(index, tools.length) ) {
-		res.send(tools[index])
-	} else {
-		// res.sendStatus(400)
-		res.status(400).send('Tool does not exist')
-	}
-})
-
-app.post('/tools', (req, res) => {
-	// console.log('POST /tools, body=', req.body);
-	// Kontrollera att req.body är korrekt utformat
-	let maybeBody = req.body
-	if( !isToolsObject(maybeBody) ) {
-		res.status(400).send('Bad tool object')
-		return
-	}
-
-	tools.push(req.body)
-	res.sendStatus(200)
-})
-
-app.put('/tools/:index', (req, res) => {
-	// 1. kontrollera att index är okej
-	// 2. kontrollera att req.body är okej
-	// 3. ersätt tool-objektet i arrayen på index "index" med req.body
-	let index = Number(req.params.index)
-	if( !isProperIndex(index, tools.length) ) {
-		res.status(400).send('Bad tool index')
-	}
-	else if( !isToolsObject(req.body) ) {
-		res.status(400).send('Bad tool object')
-	}
-	else {
-		tools[index] = req.body
-		res.sendStatus(200)
-	}
-})
-
-app.delete('/tools/:index', (req, res) => {
-	let index = Number(req.params.index)
-	if( !isProperIndex(index, tools.length) ) {
-		res.status(400).send('Bad tool index')
-	} else {
-		tools.splice(index, 1)
-		res.sendStatus(200)
-	}
-})
-
-
-// Nästa steg:
-// 1. flytta ut valideringsfunktionerna till: validate.js
-// 2. flytta GET+POST+PUT+DELETE (hela tools-resursen) till en egen fil: routes/tools.js
+app.use('/tools', tools)
 
 
 // Starta servern
